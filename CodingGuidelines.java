@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 /**
  * Klassenbeschreibung ...
- * 	- static/final variables
+ *  - static/final variables
  *  - grouped global variables
  *  - inner classes
  *  - constructor
@@ -18,12 +18,12 @@ import java.util.Iterator;
 public class Codereview {
 
 	//in this order
-	private final static int sUPPERCASE = 0;			//or static final
+	private final static int sUPPERCASE = 0;		//or static final
 	private static int sVariable = 1;
 	private final String ANOTHERVERYLONGNAME = "bla";	//constant variable
 	
 	//doSomething
-	private String _globalStr;							//description
+	private String _globalStr;				//description
 	private boolean _isVeryLongName;
 	private int _x, _y, _z;
 	
@@ -55,16 +55,16 @@ public class Codereview {
 	/**
 	 * This is a methode which does someting.
 	 * @param	a
-	 * 			a Integer, ...
+	 * 		a Integer, ...
 	 * 
 	 * @param	b
-	 * 			a Integer, ...
+	 * 		a Integer, ...
 	 * 
 	 * @return	true, if 1 is greater than 2 blablabla
-	 * 			blablablablablablablablablablablabla
+	 * 		blablablablablablablablablablablabla
 	 * 
 	 * @throws	MyException
-	 * 			Possible cause of the Exception ...
+	 * 		Possible cause of the Exception ...
 	 */
 	public boolean doSomething(int a, int b) throws MyException {
 		int i = 0;
@@ -103,7 +103,7 @@ public class Codereview {
 	}
 	
 	
-	/* Getters and Setters */			//required comment
+	/* Getters and Setters */		//required comment
 	public String getGlobalStr() {		//same name as variable
 		return _globalStr;
 	}
