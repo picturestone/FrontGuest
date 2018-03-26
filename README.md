@@ -1,4 +1,4 @@
-# Hotelmanagement
+# FrontGuest
 
 project team
    - Bolter Raphael
