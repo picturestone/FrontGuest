@@ -12,7 +12,7 @@ DROP TABLE ReservationPerson;
 DROP TABLE Reservation;
 
 -- Level 2
-DROP TABLE ContractNode;
+DROP TABLE ContactNode;
 DROP TABLE PackageDescription;
 DROP TABLE Person;
 
@@ -34,163 +34,162 @@ DROP TABLE Season;
 
 -- Level 0
 CREATE TABLE Address (
-  id INT UNSIGNED AUTO_INCREMENT,
-  country VARCHAR(),
-  province VARCHAR(),
-  zipCode VARCHAR(),
-  city VARCHAR(),
-  street VARCHAR(),
-  streetNumber VARCHAR(),
-  apartment VARCHAR(),
-  PRIMARY KEY (id)
+  addressId INT UNSIGNED AUTO_INCREMENT,
+  country VARCHAR(30),
+  province VARCHAR(30),
+  zipCode VARCHAR(6),
+  city VARCHAR(30),
+  street VARCHAR(40),
+  streetNumber VARCHAR(10),
+  apartment VARCHAR(10),
+  PRIMARY KEY (addressId)
 );
 CREATE TABLE MerchandiseGroup (
-  id INT UNSIGNED AUTO_INCREMENT,
-  description VARCHAR(),
-  taxPercentageRate,
-  PRIMARY KEY (id)
+  merchandiseGroupId INT UNSIGNED AUTO_INCREMENT,
+  description VARCHAR(40),
+  taxPercentageRate NUMERIC(5,2),
+  PRIMARY KEY (merchandiseGroupId)
 );
 CREATE TABLE OptionDescription (
-  id INT UNSIGNED AUTO_INCREMENT,
-  description VARCHAR(),
-  PRIMARY KEY (id)
+  optionId INT UNSIGNED AUTO_INCREMENT,
+  description TEXT,
+  PRIMARY KEY (optionId)
 );
 CREATE TABLE OptionStatus (
-  statusCode VARCHAR(),
-  description VARCHAR(),
-  PRIMARY KEY (statusCode)
+  optionStatusCode INT UNSIGNED NOT NULL,
+  description VARCHAR(40),
+  PRIMARY KEY (optionStatusCode)
 );
 CREATE TABLE ReservationStatus (
-  statusCode VARCHAR(),
-  description VARCHAR(),
-  PRIMARY KEY (statusCode)
+  reservationStatusCode INT UNSIGNED NOT NULL,
+  description VARCHAR(40),
+  PRIMARY KEY (reservationStatusCode)
 );
 CREATE TABLE RoomCategory (
-  id INT UNSIGNED AUTO_INCREMENT,
-  description VARCHAR(),
-  PRIMARY KEY (id)
+  roomCategoryId INT UNSIGNED AUTO_INCREMENT,
+  description VARCHAR(40),
+  PRIMARY KEY (roomCategoryId)
 );
 CREATE TABLE Season (
-  id INT UNSIGNED AUTO_INCREMENT,
-  description VARCHAR(),
+  seasonId INT UNSIGNED AUTO_INCREMENT,
+  description VARCHAR(40),
   startDate DATE,
   endDate DATE,
-  PRIMARY KEY (id)
+  PRIMARY KEY (seasonId)
 );
 
 -- Level 1
 CREATE TABLE Contact (
-  id INT UNSIGNED AUTO_INCREMENT,
-  phone VARCHAR(),
-  email VARCHAR(),
-  fax VARCHAR(),
-  creditCardNumber VARCHAR(),
+  contactId INT UNSIGNED AUTO_INCREMENT,
+  phone VARCHAR(15),
+  email VARCHAR(254),
+  fax VARCHAR(15),
+  creditCardNumber VARCHAR(19),
   addressId INT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (addressId) REFERENCES Address (id)
+  PRIMARY KEY (contactId),
+  FOREIGN KEY (addressId) REFERENCES Address (addressId)
 );
 CREATE TABLE HotelServiceDescription (
-  id INT UNSIGNED AUTO_INCREMENT,
-  description VARCHAR(),
-  title VARCHAR(),
-  priceSuggestion,
+  hotelServiceDescriptionId INT UNSIGNED AUTO_INCREMENT,
+  description TEXT,
+  title VARCHAR(50),
+  priceSuggestion NUMERIC(6,2),
   isPackage BOOL,
   merchandiseGroupId INT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (merchandiseGroupId) REFERENCES MerchandiseGroup (id)
+  PRIMARY KEY (hotelServiceDescriptionId),
+  FOREIGN KEY (merchandiseGroupId) REFERENCES MerchandiseGroup (merchandiseGroupId)
 );
 CREATE TABLE RoomCategoryPrice (
-  id INT UNSIGNED AUTO_INCREMENT,
+  roomCategoryPriceId INT UNSIGNED AUTO_INCREMENT,
   listPrice NUMERIC(6,2) UNSIGNED,
   minimumPrice NUMERIC(6,2) UNSIGNED,
   dayPrice NUMERIC(6,2) UNSIGNED,
   costPrice NUMERIC(6,2) UNSIGNED,
   roomCategoryId INT UNSIGNED,
   seasonId INT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (roomCategoryId) REFERENCES RoomCategory (id),
-  FOREIGN KEY (seasonId) REFERENCES Season (id)
+  PRIMARY KEY (roomCategoryPriceId),
+  FOREIGN KEY (roomCategoryId) REFERENCES RoomCategory (roomCategoryId),
+  FOREIGN KEY (seasonId) REFERENCES Season (seasonId)
 );
 
 -- Level 2
-CREATE TABLE ContractNode (
-  id INT UNSIGNED AUTO_INCREMENT,
-  text VARCHAR(),
+CREATE TABLE ContactNode (
+  contactNodeId INT UNSIGNED AUTO_INCREMENT,
+  text TEXT,
   contactId INT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (contactId) REFERENCES Contact (id)
+  PRIMARY KEY (contactNodeId),
+  FOREIGN KEY (contactId) REFERENCES Contact (contactId)
 );
 CREATE TABLE PackageDescription (
   packageId INT UNSIGNED,
   serviceId INT UNSIGNED,
   PRIMARY KEY (packageId,serviceId),
-  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (id),
-  FOREIGN KEY (serviceId) REFERENCES HotelServiceDescription (id)
+  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (hotelServiceDescriptionId),
+  FOREIGN KEY (serviceId) REFERENCES HotelServiceDescription (hotelServiceDescriptionId)
 );
 CREATE TABLE Person (
-  id INT UNSIGNED AUTO_INCREMENT,
-  degree VARCHAR(),
-  fname VARCHAR(),
-  sname VARCHAR(),
-  lname VARCHAR(),
+  personId INT UNSIGNED NOT NULL,
+  degree VARCHAR(15),
+  fname VARCHAR(50),
+  sname VARCHAR(50),
+  lname VARCHAR(50),
+  dateOfBirth DATE,
   sex CHAR(1),
   isVip BOOL,
   inArchive BOOL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES Contact (id)
+  PRIMARY KEY (personId),
+  FOREIGN KEY (personId) REFERENCES Contact (contactId)
 );
 
 --Level 4
 CREATE TABLE Reservation (
-  number INT UNSIGNED AUTO_INCREMENT,
+  reservationNumber INT UNSIGNED AUTO_INCREMENT,
   arrivalDate DATE,
   arrivalTime TIME,
   departureDate DATE,
-  -- cancelationId,
   -- cancelationPolicy,
-  reservationStatusCode VARCHAR(),
-  PRIMARY KEY (number),
-  -- FOREIGN KEY (cancelationId) REFERENCES Cancelation (id),
+  reservationStatusCode INT UNSIGNED,
+  PRIMARY KEY (reservationNumber),
   -- FOREIGN KEY (cancelationPolicy) REFERENCES CancelationPolicy (id),
-  FOREIGN KEY (reservationStatusCode) REFERENCES ReservationStatus (statusCode)
+  FOREIGN KEY (reservationStatusCode) REFERENCES ReservationStatus (reservationStatusCode)
 );
 
 -- Level 5
 CREATE TABLE Option (
-  id INT UNSIGNED AUTO_INCREMENT,
+  optionId INT UNSIGNED AUTO_INCREMENT,
   optionDate DATE,
   optionDescriptionId INT UNSIGNED,
-  optionStatusCode VARCHAR(),
+  optionStatusCode INT UNSIGNED,
   reservationNumber INT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (optionDescriptionId) REFERENCES OptionDescription (id),
-  FOREIGN KEY (optionStatusCode) REFERENCES OptionStatus (statusCode),
-  FOREIGN KEY (reservationNumber) REFERENCES Reservation (number)
+  PRIMARY KEY (optionId),
+  FOREIGN KEY (optionDescriptionId) REFERENCES OptionDescription (optionId),
+  FOREIGN KEY (optionStatusCode) REFERENCES OptionStatus (optionStatusCode),
+  FOREIGN KEY (reservationNumber) REFERENCES Reservation (reservationNumber)
 );
 CREATE TABLE ReservationPerson (
   reservationNumber INT UNSIGNED,
   personId INT UNSIGNED,
   PRIMARY KEY (reservationNumber,personId),
-  FOREIGN KEY (reservationNumber) REFERENCES Reservation (number),
-  FOREIGN KEY (personId) REFERENCES Person (id)
+  FOREIGN KEY (reservationNumber) REFERENCES Reservation (reservationNumber),
+  FOREIGN KEY (personId) REFERENCES Person (personId)
 );
 
 -- Level 6
 CREATE TABLE ReservationUnit (
-  id INT UNSIGNED AUTO_INCREMENT,
+  reservationUnitId INT UNSIGNED AUTO_INCREMENT,
   startDate DATE,
   endDate DATE,
-  notes VARCHAR(),
+  notes TEXT,
   reservationNumber INT UNSIGNED,
   -- roomNumber,
   roomCategoryId INT UNSIGNED,
   packageId INT UNSIGNED,
   -- quotaId,
-  PRIMARY KEY (id),
-  FOREIGN KEY (reservationNumber) REFERENCES Reservation (number),
+  PRIMARY KEY (reservationUnitId),
+  FOREIGN KEY (reservationNumber) REFERENCES Reservation (reservationNumber),
   -- FOREIGN KEY (roomNumber) REFERENCES Room (number),
-  FOREIGN KEY (roomCategoryId) REFERENCES RoomCategory (id),
-  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (id),
+  FOREIGN KEY (roomCategoryId) REFERENCES RoomCategory (roomCategoryId),
+  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (hotelServiceDescriptionId),
   -- FOREIGN KEY (quotaId) REFERENCES Quota (id)
 );
 
@@ -199,6 +198,6 @@ CREATE TABLE ReservationUnitPackage (
   packageId INT UNSIGNED,
   reservationUnitId INT UNSIGNED,
   PRIMARY KEY (packageId,reservationUnitId),
-  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (id),
-  FOREIGN KEY (reservationUnitId) REFERENCES ReservationUnit (id)
+  FOREIGN KEY (packageId) REFERENCES HotelServiceDescription (hotelServiceDescriptionId),
+  FOREIGN KEY (reservationUnitId) REFERENCES ReservationUnit (reservationUnitId)
 );
